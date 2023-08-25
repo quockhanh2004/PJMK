@@ -1,0 +1,12 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Layer 1: Viền của button -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/dark_green" /> <!-- Màu nền của button -->
+            <corners android:radius="10dp" /> <!-- Bo góc button -->
+            <stroke
+                android:width="2dp"
+                android:color="@color/black" /> <!-- Độ dày viền của button -->
+        </shape>
+    </item>
+</layer-list>
