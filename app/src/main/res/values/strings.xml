@@ -2,26 +2,9 @@
     <string name="app_name">PJMK</string>
     <string name="forgot_password"><u>forgot password?</u></string>
     <string name="channel_notify">Thông báo phát hiện người</string>
-    <string name="sign_up"><b> Sign Up</b></string>
-    <string name="edit"><u>Chỉnh sửa</u></string>
-    <string name="delete"><u>Xoá</u></string>
-    <string name="mainerName">Họ và tên: Phạm Ngọc Quốc Khánh</string>
-    <string name="MSSV">MSSV: PS34197</string>
-    <string name="birthday">Ngày Sinh: 02-09-2004</string>
-    <string name="major">Chuyên ngành: Lập trình Mobile</string>
-    <string name="Class">Lớp: MD18306</string>
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>
