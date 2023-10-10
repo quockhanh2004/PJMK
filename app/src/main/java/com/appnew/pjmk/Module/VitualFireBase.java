@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.appnew.pjmk.Model.MapVirtual;
+import com.appnew.pjmk.Model.Toggle;
 import com.appnew.pjmk.Model.User;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -19,41 +19,40 @@ import java.util.HashMap;
 import java.util.List;
 
 public class VitualFireBase {
-    private MapVirtual mapVirtual = new MapVirtual();
+    private Toggle toggle = new Toggle();
     private Context context;
+    private String mail;
     private FirebaseFirestore database;
-    private List<MapVirtual> virtualList = new ArrayList<>();
+    private List<Toggle> toggleList = new ArrayList<>();
 
     public VitualFireBase(Context context) {
         this.context = context;
+    }
+
+    public VitualFireBase(Context context, String mail) {
+        this.context = context;
+        this.mail = mail.trim();
         database = FirebaseFirestore.getInstance();
         ListenFirebaseFirestore();
     }
 
-    public MapVirtual getMapVirtual(String mail) {
-        ListenFirebaseFirestore();
-        for (MapVirtual V : virtualList) {
-            if (V.getMail().equals(mail)) {
-                return V;
-            }
-        }
-        MapVirtual map = new MapVirtual();
-        map.setDefaultAll();
-        return map;
+    public List<Toggle> getToggleList() {
+        return toggleList;
     }
 
-    public void addMapVirtual(MapVirtual virtual) {
+    public void addMapVirtual(Toggle virtual) {
         HashMap<String, Object> mapTodo = virtual.convertHashMap();
-        database.collection(MapVirtual.TABLE_NAME).document(virtual.getMail()).set(mapTodo)
+        System.out.println(Toggle.TABLE_NAME + "/" + mail + "/" + mail + "/" + virtual.getId());
+        database.collection(Toggle.TABLE_NAME).document(mail).collection(mail).document(virtual.getId()).set(mapTodo)
                 .addOnSuccessListener(unused ->
                         Toast.makeText(context, "Thêm thành công", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(context, "Thêm thất bại", Toast.LENGTH_SHORT).show());
 
     }
 
-    public void setMapVirtual(MapVirtual virtual) {
-        database.collection(MapVirtual.TABLE_NAME).document(virtual.getMail())
-                .update(virtual.convertHashMap())
+    public void setMapVirtual(Toggle toggle) {
+        database.collection(Toggle.TABLE_NAME).document(mail).collection(mail).document(toggle.getId())
+                .update(toggle.convertHashMap())
                 .addOnSuccessListener(unused -> {
                     Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                 })
@@ -64,7 +63,7 @@ public class VitualFireBase {
     }
 
     public void ListenFirebaseFirestore() {
-        database.collection(MapVirtual.TABLE_NAME).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        database.collection(Toggle.TABLE_NAME).document(mail).collection(mail).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -75,21 +74,21 @@ public class VitualFireBase {
                     for (DocumentChange dc : value.getDocumentChanges()) {
                         switch (dc.getType()) {
                             case ADDED:
-                                dc.getDocument().toObject(MapVirtual.class);
-                                virtualList.add(dc.getDocument().toObject(MapVirtual.class));
+                                dc.getDocument().toObject(Toggle.class);
+                                toggleList.add(dc.getDocument().toObject(Toggle.class));
                                 break;
                             case MODIFIED:
-                                MapVirtual updateVirtual = dc.getDocument().toObject(MapVirtual.class);
+                                Toggle updateVirtual = dc.getDocument().toObject(Toggle.class);
                                 if (dc.getOldIndex() == dc.getNewIndex()) {
-                                    virtualList.set(dc.getOldIndex(), updateVirtual);
+                                    toggleList.set(dc.getOldIndex(), updateVirtual);
                                 } else {
-                                    virtualList.remove(dc.getOldIndex());
-                                    virtualList.add(updateVirtual);
+                                    toggleList.remove(dc.getOldIndex());
+                                    toggleList.add(updateVirtual);
                                 }
                                 break;
                             case REMOVED:
-                                dc.getDocument().toObject(User.class);
-                                virtualList.remove(dc.getOldIndex());
+                                dc.getDocument().toObject(Toggle.class);
+                                toggleList.remove(dc.getOldIndex());
                         }
                     }
                 }

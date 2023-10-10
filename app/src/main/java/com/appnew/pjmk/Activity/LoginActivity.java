@@ -26,10 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.appnew.pjmk.Model.MapVirtual;
 import com.appnew.pjmk.Model.User;
 import com.appnew.pjmk.Module.UserFireBase;
-import com.appnew.pjmk.Module.VitualFireBase;
 import com.appnew.pjmk.R;
 import com.appnew.pjmk.libs.SendMail;
 import com.google.android.material.textfield.TextInputEditText;
@@ -43,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout TextIPPass;
     private CheckBox chkSavePass, chkAutoLogin;
     private UserFireBase userFireBaseAcc;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // ------------------------------------------------------------------------------------------
-        VitualFireBase vitualFireBase = new VitualFireBase(this);
+//        VitualFireBase vitualFireBase = new VitualFireBase(this);
 
         btnLogin.setOnClickListener(v -> {
             String username, pass;
@@ -120,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
             pass = edtPass.getText().toString().trim();
 
             String login = userFireBaseAcc.login(new User(username, pass));
+            token = userFireBaseAcc.getToken(username);
             if (checkInputUser()) {
                 if (checkInputPass()) {
                     if (login != null) {
@@ -134,23 +134,25 @@ public class LoginActivity extends AppCompatActivity {
                             editor.clear();
                             editor.apply();
                         }
-                        Toast.makeText(this, "Đăng nhập thành công với tài khoản " + username, Toast.LENGTH_SHORT).show();
-//                        System.out.println(username);
-                        MapVirtual virtual = vitualFireBase.getMapVirtual(username);
+//                        Toast.makeText(this, "Đăng nhập thành công với tài khoản " + username, Toast.LENGTH_SHORT).show();
+//                        MapVirtual virtual = vitualFireBase.getMapVirtual(username);
                         Intent intent = null;
                         switch (userFireBaseAcc.CheckFirstAdd(username)) {
                             case 1:
-                                intent = new Intent(this, MainActivity.class);
+                                intent = new Intent(this, ChangeTokenActivity.class);
+                                intent.putExtra("token", token);
                                 intent.putExtra("first", true);
+//                                intent.putExtra("virtual", virtual);
                                 break;
                             case 0:
                                 intent = new Intent(this, MainActivity.class);
+                                intent.putExtra("token", token);
                                 break;
                         }
 
                         //xóa các activity khác, chỉ để lại activity sắp được khởi chạy
                         if (intent != null) {
-                            intent.putExtra("virtual", virtual);
+//                            intent.putExtra("virtual", virtual);
                             intent.putExtra("mail", username);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
@@ -245,10 +247,6 @@ public class LoginActivity extends AppCompatActivity {
                     txtMail.setText(Html.fromHtml("Mã OTP đã được gửi đến <b>" + mail + "</b>"));
                 } else {
                     Toast.makeText(this, "Tài khoản này không tồn tại", Toast.LENGTH_SHORT).show();
-//                    btnSendMail.setVisibility(View.VISIBLE);
-//                    edtOTP.setVisibility(View.GONE);
-//                    btnCheckOTP.setVisibility(View.GONE);
-//                    txtMail.setVisibility(View.GONE);
                 }
             } else {
                 Toast.makeText(this, "Bạn chưa nhập địa chỉ mail", Toast.LENGTH_SHORT).show();
@@ -337,6 +335,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.putString("UserName", UserName);
         editor.putString("Pass", Pass);
         editor.putBoolean("isRemember", true);
+        editor.putString("token", token);
         editor.apply();
     }
 

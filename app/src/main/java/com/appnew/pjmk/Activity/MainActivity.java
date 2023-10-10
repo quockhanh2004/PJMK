@@ -1,16 +1,28 @@
 package com.appnew.pjmk.Activity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.appnew.pjmk.Adapter.ToggleAdapter;
 import com.appnew.pjmk.Model.MapVirtual;
+import com.appnew.pjmk.Model.Toggle;
+import com.appnew.pjmk.Module.BlynkIoT;
+import com.appnew.pjmk.Module.Callback;
+import com.appnew.pjmk.Module.FirebaseManager;
+import com.appnew.pjmk.R;
 import com.appnew.pjmk.Services.ForegroundService;
 import com.appnew.pjmk.databinding.ActivityMainBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -19,13 +31,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mainBinding;
     private Intent intent;
     private String mail;
     private MapVirtual virtual;
-    //    private DeviceFireBaseRealTime fireBaseRealTime;
+    private FirebaseManager firebaseManager;
+    private BlynkIoT blynkIoT;
     private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("ESP32");
 
     @Override
@@ -35,126 +51,138 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mainBinding.getRoot());
         intent = getIntent();
         mail = intent.getStringExtra("mail");
+        String token = intent.getStringExtra("token");
         virtual = (MapVirtual) intent.getSerializableExtra("virtual");
 
-        setTgBtn();
-        readDataBaseRealTime();
-        intent = new Intent(this, ForegroundService.class);
-        startService(intent);
+        ToggleAdapter toggleAdapter = new ToggleAdapter(this);
+        blynkIoT = new BlynkIoT(this, token);
+//        readDataBaseRealTime();
+//        intent = new Intent(this, ForegroundService.class);
+//        startService(intent);
+        getDataBlynk();
+
 
         mainBinding.btnLog.setOnClickListener(v -> {
             startActivity(new Intent(this, LogActivity.class));
         });
 
-        mainBinding.tg0.setOnClickListener(v -> {
-            databaseReference.child("toggle1").setValue(mainBinding.tg0.isChecked());
-        });
-        mainBinding.tg1.setOnClickListener(v -> {
-            databaseReference.child("toggle2").setValue(mainBinding.tg1.isChecked());
-        });
-        mainBinding.tg2.setOnClickListener(v -> {
-            databaseReference.child("toggle3").setValue(mainBinding.tg2.isChecked());
-        });
-        mainBinding.tg3.setOnClickListener(v -> {
-            databaseReference.child("toggle4").setValue(mainBinding.tg3.isChecked());
-        });
-        mainBinding.tg4.setOnClickListener(v -> {
-            databaseReference.child("notification").setValue(mainBinding.tg4.isChecked());
-        });
-
-    }
-
-    public void setTgBtn() {
-
-        mainBinding.tg0.setTextOn(virtual.getNameTg1() + " On");
-        mainBinding.tg0.setTextOff(virtual.getNameTg1() + " Off");
-
-        mainBinding.tg1.setTextOn(virtual.getNameTg2() + " On");
-        mainBinding.tg1.setTextOff(virtual.getNameTg2() + " Off");
-
-        mainBinding.tg2.setTextOn(virtual.getNameTg3() + " On");
-        mainBinding.tg2.setTextOff(virtual.getNameTg3() + " Off");
-
-        mainBinding.tg3.setTextOn(virtual.getNameTg4() + " On");
-        mainBinding.tg3.setTextOff(virtual.getNameTg4() + " Off");
-
-        mainBinding.tg4.setTextOn(virtual.getNameTg5() + " On");
-        mainBinding.tg4.setTextOff(virtual.getNameTg5() + " Off");
-
-        mainBinding.btn0.setText(virtual.getNameBtn1());
-        mainBinding.btn1.setText(virtual.getNameBtn2());
-
-        if (virtual.isAtvTg1()) {
-            mainBinding.tg0.setVisibility(View.VISIBLE);
-        } else {
-            mainBinding.tg0.setVisibility(View.GONE);
-        }
-        if (virtual.isAtvTg2()) {
-            mainBinding.tg1.setVisibility(View.VISIBLE);
-        } else {
-            mainBinding.tg1.setVisibility(View.GONE);
-        }
-        if (virtual.isAtvTg3()) {
-            mainBinding.tg2.setVisibility(View.VISIBLE);
-        } else {
-            mainBinding.tg2.setVisibility(View.GONE);
-        }
-        if (virtual.isAtvTg4()) {
-            mainBinding.tg3.setVisibility(View.VISIBLE);
-        } else {
-            mainBinding.tg3.setVisibility(View.GONE);
-        }
-        if (virtual.isAtvTg5()) {
-            mainBinding.tg4.setVisibility(View.VISIBLE);
-        } else {
-            mainBinding.tg4.setVisibility(View.GONE);
-        }
-
-        if (virtual.isAtvBtn1()) {
-            mainBinding.btn0.setVisibility(View.VISIBLE);
-        } else {
-            mainBinding.btn0.setVisibility(View.GONE);
-        }
-        if (virtual.isAtvBtn2()) {
-            mainBinding.btn1.setVisibility(View.VISIBLE);
-        } else {
-            mainBinding.btn1.setVisibility(View.GONE);
-        }
-    }
-
-    public void readDataBaseRealTime() {
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        firebaseManager = FirebaseManager.getInstance();
+        firebaseManager.getToggle(mail, new Callback<List<Toggle>>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // Xử lý khi dữ liệu thay đổi
-                if (snapshot.exists()) {
+            public void onSuccess(List<Toggle> result) {
+                toggleAdapter.setData(result, token);
+            }
 
-                    // Sử dụng dữ liệu lấy được
-                    double thermal = snapshot.child("Thermal").getValue(Double.class);
-                    double humidity = snapshot.child("Humidity").getValue(Double.class);
-                    boolean toggle1 = snapshot.child("toggle1").getValue(Boolean.class);
-                    boolean toggle2 = snapshot.child("toggle2").getValue(Boolean.class);
-                    boolean toggle3 = snapshot.child("toggle3").getValue(Boolean.class);
-                    boolean toggle4 = snapshot.child("toggle4").getValue(Boolean.class);
-                    boolean notification = snapshot.child("notification").getValue(Boolean.class);
+            @Override
+            public void onError(Exception e) {
+                Log.e("Error", "e");
+            }
+        });
 
-                    mainBinding.Nhiet.setText(String.valueOf(thermal));
-                    mainBinding.Am.setText(String.valueOf(humidity));
-                    mainBinding.tg0.setChecked(toggle1);
-                    mainBinding.tg1.setChecked(toggle2);
-                    mainBinding.tg2.setChecked(toggle3);
-                    mainBinding.tg3.setChecked(toggle4);
-                    mainBinding.tg4.setChecked(notification);
 
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        mainBinding.rclToggle.setLayoutManager(gridLayoutManager);
+        mainBinding.rclToggle.setAdapter(toggleAdapter);
+
+        mainBinding.btnChangeToken.setOnClickListener(v -> {
+            startActivity(new Intent(this, ChangeTokenActivity.class)
+                    .putExtra("mail", mail)
+                    .putExtra("virtual", virtual)
+                    .putExtra("token", token));
+        });
+
+        mainBinding.btnLogOut.setOnClickListener(v -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("Account", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isAutoLogin", false);
+            editor.apply();
+            intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+    }
+
+
+    //    public void readDataBaseRealTime() {
+//
+//        databaseReference.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                // Xử lý khi dữ liệu thay đổi
+//                if (snapshot.exists()) {
+//
+//                    // Sử dụng dữ liệu lấy được
+////                    double thermal = snapshot.child("Thermal").getValue(Double.class);
+////                    double humidity = snapshot.child("Humidity").getValue(Double.class);
+////                    boolean toggle1 = snapshot.child("toggle1").getValue(Boolean.class);
+////                    boolean toggle2 = snapshot.child("toggle2").getValue(Boolean.class);
+////                    boolean toggle3 = snapshot.child("toggle3").getValue(Boolean.class);
+////                    boolean toggle4 = snapshot.child("toggle4").getValue(Boolean.class);
+//                    boolean notification = snapshot.child("notification").getValue(Boolean.class);
+//
+////                    mainBinding.Nhiet.setText(String.valueOf(thermal));
+////                    mainBinding.Am.setText(String.valueOf(humidity));
+////                    mainBinding.tg0.setChecked(toggle1);
+////                    mainBinding.tg1.setChecked(toggle2);
+////                    mainBinding.tg2.setChecked(toggle3);
+////                    mainBinding.tg3.setChecked(toggle4);
+////                    mainBinding.tg4.setChecked(notification);
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                // Xử lý khi xảy ra lỗi
+//            }
+//        });
+//    }
+    private void getDataBlynk() {
+
+        blynkIoT.startFetchingData(0, new BlynkIoT.DataCallback() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSuccess(String data) {
+                mainBinding.Nhiet.setText(data);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        }, 1000, 0);
+        blynkIoT.startFetchingData(1, new BlynkIoT.DataCallback() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSuccess(String data) {
+                mainBinding.Am.setText(data + "");
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        }, 1000, 2);
+
+        blynkIoT.startGetIsOnline(new BlynkIoT.DataCallback() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onSuccess(String data) {
+                if (Boolean.parseBoolean(data)) {
+                    mainBinding.Status.setBackground(getDrawable(R.drawable.is_online));
+                } else {
+                    mainBinding.Status.setBackground(getDrawable(R.drawable.is_offline));
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Xử lý khi xảy ra lỗi
+            public void onError(String errorMessage) {
+
             }
         });
+
+
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -178,4 +206,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
     }
+
+
 }

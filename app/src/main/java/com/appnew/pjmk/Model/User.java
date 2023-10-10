@@ -5,7 +5,18 @@ import java.util.HashMap;
 
 public class User implements Serializable {
     public static String TableName = "User_Project_MK";
-    private String mail, pass;
+    private String mail;
+    private String pass;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    private String token;
     private int firstAdd = 0;
 
     public String getMail() {
@@ -51,6 +62,7 @@ public class User implements Serializable {
         work.put("mail", mail);
         work.put("firstAdd", firstAdd);
         work.put("pass", pass);
+        work.put("token", token);
         return work;
     }
 }

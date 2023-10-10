@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?><!--<layout >-->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,315 +13,62 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edtMail"
+            android:id="@+id/edtToken"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:editable="false"
-            android:hint="Mail Address"
+            android:editable="true"
+            android:hint="Your Token"
             tools:ignore="Deprecated" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:orientation="horizontal">-->
-
-    <!--        <com.google.android.material.textfield.TextInputLayout-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginEnd="3dp"-->
-    <!--            android:layout_weight="1">-->
-
-    <!--            <com.google.android.material.textfield.TextInputEditText-->
-    <!--                android:id="@+id/edtThermal"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:hint="vNumber Thermal"-->
-    <!--                android:inputType="numberDecimal"/>-->
-    <!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-    <!--        <com.google.android.material.textfield.TextInputLayout-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_marginStart="3dp"-->
-    <!--            android:layout_weight="1">-->
-
-    <!--            <com.google.android.material.textfield.TextInputEditText-->
-    <!--                android:id="@+id/edtHumidity"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:hint="vNumber Humidity"-->
-    <!--                android:inputType="numberDecimal"/>-->
-    <!--        </com.google.android.material.textfield.TextInputLayout>-->
-    <!--    </LinearLayout>-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:orientation="horizontal">
-
-        <Switch
-            android:id="@+id/swtg0"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtName0"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name Toggle 0" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="3dp"-->
-        <!--            android:layout_weight="1">-->
-
-        <!--            <com.google.android.material.textfield.TextInputEditText-->
-        <!--                android:id="@+id/edtVNumber0"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:hint="vNumber Toggle 0"-->
-        <!--                android:inputType="numberDecimal"/>-->
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <Switch
-            android:id="@+id/swtg1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtName1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name Toggle 1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="3dp"-->
-        <!--            android:layout_weight="1">-->
-
-        <!--            <com.google.android.material.textfield.TextInputEditText-->
-        <!--                android:id="@+id/edtVNumber1"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:hint="vNumber Toggle 1"-->
-        <!--                android:inputType="numberDecimal"/>-->
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <Switch
-            android:id="@+id/swtg2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtName2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name Toggle 2" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="3dp"-->
-        <!--            android:layout_weight="1">-->
-
-        <!--            <com.google.android.material.textfield.TextInputEditText-->
-        <!--                android:id="@+id/edtVNumber2"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:hint="vNumber Toggle 2"-->
-        <!--                android:inputType="numberDecimal"/>-->
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <Switch
-            android:id="@+id/swtg3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtName3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name Toggle 3" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <Switch
-            android:id="@+id/swtg4"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtName4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name Toggle 4" />
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:orientation="horizontal">
-
-        <Switch
-            android:id="@+id/swbtn0"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtNameBtn0"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name Button 0" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="3dp"-->
-        <!--            android:layout_weight="1">-->
-
-        <!--            <com.google.android.material.textfield.TextInputEditText-->
-        <!--                android:id="@+id/edtVNumberBtn0"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:hint="vNumber Button 0"-->
-        <!--                android:inputType="numberDecimal"/>-->
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <Switch
-            android:id="@+id/swbtn1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="3dp"
-            android:layout_weight="1">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtNameBtn1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Name Button 1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="3dp"-->
-        <!--            android:layout_weight="1">-->
-
-        <!--            <com.google.android.material.textfield.TextInputEditText-->
-        <!--                android:id="@+id/edtVNumberBtn1"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:hint="vNumber Button 1"-->
-        <!--                android:inputType="numberDecimal"/>-->
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-    </LinearLayout>
-
-
     <Button
-        android:id="@+id/btnSave"
+        android:id="@+id/btnAdd"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:text="Save"
+        android:text="Add"
+        android:backgroundTint="@color/dark_green"
         app:backgroundTint="@null" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Type" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="PIN" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Name" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rclChangeToken"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" />
+    <!--    <Button-->
+    <!--        android:id="@+id/btnSave"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="center_horizontal"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:text="Save"-->
+    <!--        app:backgroundTint="@null" />-->
 
 </LinearLayout><!--</layout>-->

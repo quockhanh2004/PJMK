@@ -4,8 +4,13 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.appnew.pjmk.Model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -101,6 +106,16 @@ public class UserFireBase {
                 .addOnFailureListener(e -> {
                     Log.e("SetFirst", "Đã xảy ra lỗi trong quá trình chuyển firstAdd thành false");
                 });
+    }
+
+    public String getToken(String mail) {
+        ListenFirebaseFirestore();
+        for (User u : userList) {
+            if (u.getMail().trim().equals(mail.trim())) {
+                return u.getToken();
+            }
+        }
+        return "???";
     }
 
     public void ListenFirebaseFirestore() {

@@ -1,18 +1,39 @@
 package com.appnew.pjmk.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.appnew.pjmk.Adapter.ChangeTokenAdapter;
 import com.appnew.pjmk.Model.MapVirtual;
+import com.appnew.pjmk.Model.Toggle;
+import com.appnew.pjmk.Module.Callback;
+import com.appnew.pjmk.Module.FirebaseManager;
 import com.appnew.pjmk.Module.UserFireBase;
 import com.appnew.pjmk.Module.VitualFireBase;
+import com.appnew.pjmk.R;
 import com.appnew.pjmk.databinding.ActivityChangeTokenBinding;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class ChangeTokenActivity extends AppCompatActivity {
 
     private ActivityChangeTokenBinding activityChange;
+    String token, mail;
+    VitualFireBase vitualFireBase;
+    private FirebaseManager firebaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,81 +42,83 @@ public class ChangeTokenActivity extends AppCompatActivity {
         setContentView(activityChange.getRoot());
 
         Intent intent = getIntent();
-        String mail = intent.getStringExtra("mail");
+        mail = intent.getStringExtra("mail");
         boolean first = intent.getBooleanExtra("first", false);
-        MapVirtual virtual = (MapVirtual) intent.getSerializableExtra("virtual");
+        token = intent.getStringExtra("token");
 
-        VitualFireBase vitualFireBase = new VitualFireBase(this);
-//        vitualFireBase.ListenFirebaseFirestore();
-
-
-//        activityChange.edtToken.setText(virtual.getToken());
-
-        activityChange.edtName0.setText(virtual.getNameTg1());
-        activityChange.edtName1.setText(virtual.getNameTg2());
-        activityChange.edtName2.setText(virtual.getNameTg3());
-        activityChange.edtName3.setText(virtual.getNameTg4());
-        activityChange.edtNameBtn0.setText(virtual.getNameBtn1());
-        activityChange.edtNameBtn1.setText(virtual.getNameBtn2());
-
-//        activityChange.edtVNumber0.setText(String.valueOf(virtual.getNumberVTg1()));
-//        activityChange.edtVNumber1.setText(String.valueOf(virtual.getNumberVTg2()));
-//        activityChange.edtVNumber2.setText(String.valueOf(virtual.getNumberVTg3()));
-//        activityChange.edtVNumber3.setText(String.valueOf(virtual.getNumberVTg4()));
-//        activityChange.edtVNumberBtn0.setText(String.valueOf(virtual.getNumberVBtn1()));
-//        activityChange.edtVNumberBtn1.setText(String.valueOf(virtual.getNumberVBtn2()));
-//
-//        activityChange.edtHumidity.setText(String.valueOf(virtual.getNumberVHumidity()));
-//        activityChange.edtThermal.setText(String.valueOf(virtual.getNumberVThermal()));
-
-        activityChange.swtg0.setChecked(virtual.isAtvTg1());
-        activityChange.swtg1.setChecked(virtual.isAtvTg2());
-        activityChange.swtg2.setChecked(virtual.isAtvTg3());
-        activityChange.swtg3.setChecked(virtual.isAtvTg4());
-        activityChange.swbtn0.setChecked(virtual.isAtvBtn1());
-        activityChange.swbtn1.setChecked(virtual.isAtvBtn2());
-
-        activityChange.btnSave.setOnClickListener(view -> {
-//            virtual.setToken(activityChange.edtToken.getText().toString().trim());
-            virtual.setNameTg1(activityChange.edtName0.getText().toString().trim());
-            virtual.setNameTg2(activityChange.edtName1.getText().toString().trim());
-            virtual.setNameTg3(activityChange.edtName2.getText().toString().trim());
-            virtual.setNameTg4(activityChange.edtName3.getText().toString().trim());
-            virtual.setNameBtn1(activityChange.edtNameBtn0.getText().toString().trim());
-            virtual.setNameBtn2(activityChange.edtNameBtn1.getText().toString().trim());
-
-//            virtual.setNumberVTg1(Integer.parseInt(activityChange.edtVNumber0.getText().toString()));
-//            virtual.setNumberVTg2(Integer.parseInt(activityChange.edtVNumber1.getText().toString()));
-//            virtual.setNumberVTg3(Integer.parseInt(activityChange.edtVNumber2.getText().toString()));
-//            virtual.setNumberVTg4(Integer.parseInt(activityChange.edtVNumber3.getText().toString()));
-//            virtual.setNumberVBtn1(Integer.parseInt(activityChange.edtVNumberBtn0.getText().toString()));
-//            virtual.setNumberVBtn2(Integer.parseInt(activityChange.edtVNumberBtn1.getText().toString()));
-
-            virtual.setAtvTg1(activityChange.swtg0.isChecked());
-            virtual.setAtvTg2(activityChange.swtg1.isChecked());
-            virtual.setAtvTg3(activityChange.swtg2.isChecked());
-            virtual.setAtvTg4(activityChange.swtg3.isChecked());
-            virtual.setAtvBtn1(activityChange.swbtn0.isChecked());
-            virtual.setAtvBtn2(activityChange.swbtn1.isChecked());
-            virtual.setMail(mail);
-            if (first) {
-                vitualFireBase.addMapVirtual(virtual);
-                UserFireBase userFireBase = new UserFireBase(this);
-                userFireBase.setFirstAdd(mail);
-            } else {
-                vitualFireBase.setMapVirtual(virtual);
+        activityChange.edtToken.setText(token);
+        vitualFireBase = new VitualFireBase(getApplicationContext(), mail);
+        firebaseManager = FirebaseManager.getInstance();
+        ChangeTokenAdapter tokenAdapter = new ChangeTokenAdapter(ChangeTokenActivity.this, mail, firebaseManager, vitualFireBase);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChangeTokenActivity.this);
+        activityChange.rclChangeToken.setLayoutManager(linearLayoutManager);
+        activityChange.rclChangeToken.setAdapter(tokenAdapter);
+        firebaseManager.getToggle(mail, new Callback<List<Toggle>>() {
+            @Override
+            public void onSuccess(List<Toggle> result) {
+                tokenAdapter.setData(result);
+                tokenAdapter.notifyDataSetChanged();
             }
-            Intent intent1 = new Intent(this, MainActivity.class);
-            intent1.putExtra("mail", mail);
-            intent1.putExtra("virtual", virtual);
-            startActivity(intent1);
-            finish();
+
+            @Override
+            public void onError(Exception e) {
+
+            }
         });
+
+// Bắt đầu AsyncTask để lấy danh sách Toggle
+//        GetToggleListTask getToggleListTask = new GetToggleListTask(this);
+//        getToggleListTask.execute();
+
+        activityChange.btnAdd.setOnClickListener(view -> {
+            showAddToggleDialog(this);
+        });
+
+//        activityChange.btnSave.setOnClickListener(view -> {
+//
+//        });
     }
 
-//    private Switch swtg0, swtg1, swtg2, swtg3, swbtn0, swbtn1;
-//    private TextInputEditText edtToken, edtThermal, edtHumidity, edtName0,
-//            edtName1, edtName2, edtName3, edtNameBtn0, edtNameBtn1,
-//            edtVNumber0, edtVNumber1, edtVNumber2, edtVNumber3, edtVNumberBtn0, edtVNumberBtn1;
-//    private Button btnSave;
+    private void showAddToggleDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_add_toggle, null);
+        builder.setView(view);
+
+        TextInputEditText edtType = view.findViewById(R.id.edtType);
+        TextInputEditText edtPIN = view.findViewById(R.id.edtPIN);
+        TextInputEditText edtName = view.findViewById(R.id.edtName);
+        Button btnSubmit = view.findViewById(R.id.btnSubmit);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        builder.setCancelable(true);
+        // Bắt sự kiện khi nút Submit được nhấn
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Lấy giá trị từ các trường EditText
+                String type = edtType.getText().toString();
+                int pin = Integer.parseInt(edtPIN.getText().toString());
+                String name = edtName.getText().toString();
+                String id;
+                try {
+                    id = vitualFireBase.getToggleList().get(vitualFireBase.getToggleList().size() - 1).getId();
+                } catch (Exception e) {
+                    id = "toggle0";
+                }
+                int number = Integer.parseInt(String.valueOf(id.charAt(id.length() - 1)));
+                number++;
+                System.out.println(number);
+                String newId = id.substring(0, id.length() - 1) + number;
+                System.out.println(newId);
+                // Xử lý dữ liệu ở đây, ví dụ, lưu vào cơ sở dữ liệu hoặc làm gì đó khác
+                vitualFireBase.addMapVirtual(new Toggle(newId, name, mail, type, pin, false));
+                vitualFireBase.ListenFirebaseFirestore();
+                // Sau khi xử lý xong, có thể đóng dialog
+                alertDialog.dismiss();
+            }
+        });
+    }
 }
