@@ -97,10 +97,14 @@ public class BlynkIoT {
         }, delay, interval);
     }
 
-//    public void stopFetchingData() {
-//        if (fetchDataTimer != null) {
-//            fetchDataTimer.cancel();
-//            fetchDataTimer = null;
-//        }
-//    }
+    public void stopFetchingData() {
+        if (fetchDataTimer != null) {
+            fetchDataTimer.cancel();
+            requestQueue.stop();
+            requestQueue.cancelAll(request -> true);
+            fetchDataTimer = null;
+        }
+//        fetchDataTimer.cancel();
+        fetchDataTimer = null;
+    }
 }

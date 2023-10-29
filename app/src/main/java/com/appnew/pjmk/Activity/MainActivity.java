@@ -8,30 +8,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.widget.GridLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.appnew.pjmk.Adapter.ToggleAdapter;
-import com.appnew.pjmk.Model.MapVirtual;
 import com.appnew.pjmk.Model.Toggle;
 import com.appnew.pjmk.Module.BlynkIoT;
 import com.appnew.pjmk.Module.Callback;
 import com.appnew.pjmk.Module.FirebaseManager;
 import com.appnew.pjmk.R;
-import com.appnew.pjmk.Services.ForegroundService;
 import com.appnew.pjmk.databinding.ActivityMainBinding;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,10 +28,9 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mainBinding;
     private Intent intent;
     private String mail;
-    private MapVirtual virtual;
-    private FirebaseManager firebaseManager;
     private BlynkIoT blynkIoT;
-    private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("ESP32");
+    private ToggleAdapter toggleAdapter;
+//    private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("ESP32");
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
         intent = getIntent();
         mail = intent.getStringExtra("mail");
         String token = intent.getStringExtra("token");
-        virtual = (MapVirtual) intent.getSerializableExtra("virtual");
+//        virtual = (MapVirtual) intent.getSerializableExtra("virtual");
 
-        ToggleAdapter toggleAdapter = new ToggleAdapter(this);
+        toggleAdapter = new ToggleAdapter(this);
+        Toast.makeText(this, token, Toast.LENGTH_SHORT).show();
         blynkIoT = new BlynkIoT(this, token);
 //        readDataBaseRealTime();
 //        intent = new Intent(this, ForegroundService.class);
@@ -66,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, LogActivity.class));
         });
 
-        firebaseManager = FirebaseManager.getInstance();
+        //    private MapVirtual virtual;
+        FirebaseManager firebaseManager = FirebaseManager.getInstance();
         firebaseManager.getToggle(mail, new Callback<List<Toggle>>() {
             @Override
             public void onSuccess(List<Toggle> result) {
@@ -85,10 +75,12 @@ public class MainActivity extends AppCompatActivity {
         mainBinding.rclToggle.setAdapter(toggleAdapter);
 
         mainBinding.btnChangeToken.setOnClickListener(v -> {
+            toggleAdapter.stopFechdata();
+            blynkIoT.stopFetchingData();
             startActivity(new Intent(this, ChangeTokenActivity.class)
                     .putExtra("mail", mail)
-                    .putExtra("virtual", virtual)
-                    .putExtra("token", token));
+                    .putExtra("token", token)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         });
 
         mainBinding.btnLogOut.setOnClickListener(v -> {
@@ -166,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         }, 1000, 2);
 
         blynkIoT.startGetIsOnline(new BlynkIoT.DataCallback() {
-            @SuppressLint("SetTextI18n")
+            @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
             @Override
             public void onSuccess(String data) {
                 if (Boolean.parseBoolean(data)) {
@@ -204,8 +196,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        blynkIoT.stopFetchingData();
+        toggleAdapter.stopFechdata();
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        blynkIoT.stopFetchingData();
+        toggleAdapter.stopFechdata();
+    }
 }

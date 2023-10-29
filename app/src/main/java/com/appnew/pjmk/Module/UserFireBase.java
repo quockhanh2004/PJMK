@@ -4,13 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import com.appnew.pjmk.Model.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -117,6 +112,8 @@ public class UserFireBase {
         }
         return "???";
     }
+
+
 
     public void ListenFirebaseFirestore() {
         database.collection(User.TableName).addSnapshotListener((value, error) -> {

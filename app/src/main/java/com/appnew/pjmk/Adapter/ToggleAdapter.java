@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.appnew.pjmk.Model.Toggle;
 import com.appnew.pjmk.Module.BlynkIoT;
 import com.appnew.pjmk.Module.FirebaseManager;
-import com.appnew.pjmk.Module.VitualFireBase;
 import com.appnew.pjmk.R;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ToggleAdapter extends RecyclerView.Adapter<ToggleAdapter.ViewHoler> {
-    private Context context;
+    private final Context context;
     private List<Toggle> toggleList;
     private String token;
     FirebaseManager firebaseManager;
@@ -64,7 +63,7 @@ public class ToggleAdapter extends RecyclerView.Adapter<ToggleAdapter.ViewHoler>
                         @Override
                         public void onSuccess(String data) {
                             toggleList.get(holder.getAdapterPosition()).setStatus(data.equals("1"));
-                            System.out.println(data);
+//                            System.out.println(data);
                             if (toggleList.get(holder.getAdapterPosition()).isStatus()) {
                                 holder.layoutToggle.setBackgroundColor(Color.parseColor("#00FF00"));
                                 holder.txtNameToggle.setText(toggleList.get(holder.getAdapterPosition()).getName() + " ON");
@@ -139,6 +138,10 @@ public class ToggleAdapter extends RecyclerView.Adapter<ToggleAdapter.ViewHoler>
                 }
             }
         }, 0, 1000);
+    }
+
+    public void stopFechdata(){
+        blynkIoT.stopFetchingData();
     }
 
     @Override
