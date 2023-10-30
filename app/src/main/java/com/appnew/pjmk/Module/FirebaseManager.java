@@ -2,15 +2,10 @@ package com.appnew.pjmk.Module;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.appnew.pjmk.Model.Toggle;
 import com.appnew.pjmk.Model.User;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,9 +53,7 @@ public class FirebaseManager {
         updateToken.put("token", token);
         firestore.collection(User.TableName).document(mail).update(updateToken)
                 .addOnSuccessListener(unused -> {})
-                .addOnFailureListener(e -> {
-                    Log.e("setToken", "Update token thất bại");
-                });
+                .addOnFailureListener(e -> Log.e("setToken", "Update token thất bại"));
     }
 
     public void getToggle(String mail, Callback<List<Toggle>> callback) {

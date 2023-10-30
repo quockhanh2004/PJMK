@@ -98,9 +98,7 @@ public class UserFireBase {
         database.collection(User.TableName).document(mail).update(updateFirst)
                 .addOnSuccessListener(unused -> {
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("SetFirst", "Đã xảy ra lỗi trong quá trình chuyển firstAdd thành false");
-                });
+                .addOnFailureListener(e -> Log.e("SetFirst", "Đã xảy ra lỗi trong quá trình chuyển firstAdd thành false"));
     }
 
     public String getToken(String mail) {
